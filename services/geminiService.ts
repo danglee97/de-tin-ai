@@ -13,8 +13,12 @@ export interface ExamGenerationParams {
   images?: { mimeType: string; data: string }[];
 }
 
-// FIX: Use import.meta.env for Vite environment variables. The variable in the .env file must be named VITE_API_KEY.
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
+// FIX: Per coding guidelines, the API key must be obtained from process.env.API_KEY. This resolves the 'ImportMeta' TypeScript error.
+const apiKey = process.env.API_KEY;
+if (!apiKey) {
+  throw new Error("API_KEY is not defined in the environment.");
+}
+const ai = new GoogleGenAI({ apiKey });
 
 export const generateExam = async (params: ExamGenerationParams): Promise<GeneratedExam> => {
   // FIX: Use the recommended 'gemini-2.5-flash' model for text tasks.
